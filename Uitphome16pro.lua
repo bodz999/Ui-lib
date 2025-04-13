@@ -164,3 +164,34 @@ end)
 toggleButton.MouseButton1Click:Connect(function()
 	frame.Visible = not frame.Visible
 end)
+
+
+
+-- Hàm hỗ trợ kéo thả
+local function makeDraggable(guiObject)
+    local dragging
+    local offset
+
+    guiObject.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            offset = input.Position - guiObject.AbsolutePosition
+        end
+    end)
+
+    guiObject.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+
+    UIS.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            guiObject.Position = UDim2.new(0, input.Position.X - offset.X, 0, input.Position.Y - offset.Y)
+        end
+    end)
+end
+
+-- Kích hoạt kéo thả cho toggleButton và frame
+makeDraggable(toggleButton)
+makeDraggable(frame)
